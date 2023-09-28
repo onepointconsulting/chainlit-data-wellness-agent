@@ -177,7 +177,7 @@ class Message(MessageBase):
         self.indent = indent
         self.actions = actions if actions is not None else []
         self.elements = elements if elements is not None else []
-        self.ddisable_human_feedback = disable_human_feedback
+        self.disable_human_feedback = disable_human_feedback
 
         super().__post_init__()
 
@@ -209,7 +209,7 @@ class Message(MessageBase):
             "parentId": self.parent_id,
             "indent": self.indent,
             "streaming": self.streaming,
-            "disableHumanFeedback": self.ddisable_human_feedback,
+            "disableHumanFeedback": self.disable_human_feedback,
         }
 
         if self.prompt:
@@ -272,6 +272,7 @@ class ErrorMessage(MessageBase):
     Args:
         content (str): Text displayed above the upload button.
         author (str, optional): The author of the message, this will be used in the UI. Defaults to the chatbot name (see config).
+        parent_id (str, optional): If provided, the message will be nested inside the parent in the UI.
         indent (int, optional): If positive, the message will be nested in the UI.
     """
 
@@ -279,11 +280,13 @@ class ErrorMessage(MessageBase):
         self,
         content: str,
         author: str = config.ui.name,
+        parent_id: Optional[str] = None,
         indent: int = 0,
         fail_on_persist_error: bool = False,
     ):
         self.content = content
         self.author = author
+        self.parent_id = parent_id
         self.indent = indent
         self.fail_on_persist_error = fail_on_persist_error
 
@@ -295,6 +298,7 @@ class ErrorMessage(MessageBase):
             "createdAt": self.created_at,
             "content": self.content,
             "author": self.author,
+            "parentId": self.parent_id,
             "indent": self.indent,
             "isError": True,
         }

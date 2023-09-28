@@ -1,6 +1,6 @@
 import os
 import uuid
-from typing import Dict, Optional, Union
+from typing import Any, Dict, List, Optional, Union
 
 import aiohttp
 from chainlit.config import config
@@ -115,15 +115,23 @@ class ChainlitCloudClient(ChainlitGraphQLClient):
 
         return True
 
-    async def create_conversation(self, app_user_id: Optional[str]) -> Optional[str]:
+    async def create_conversation(
+        self, app_user_id: Optional[str], tags: Optional[List[str]]
+    ) -> Optional[str]:
         mutation = """
-        mutation ($appUserId: String) {
-            createConversation (appUserId: $appUserId) {
+        mutation ($appUserId: String, $tags: [String!]) {
+            createConversation (appUserId: $appUserId, tags: $tags) {
                 id
             }
         }
         """
-        variables = {"appUserId": app_user_id} if app_user_id else {}
+        variables = {}  # type: Dict[str, Any]
+        if app_user_id is not None:
+            variables["appUserId"] = app_user_id
+
+        if tags:
+            variables["tags"] = tags
+
         res = await self.mutation(mutation, variables)
 
         if self.check_for_errors(res):
@@ -173,6 +181,7 @@ class ChainlitCloudClient(ChainlitGraphQLClient):
             conversation(id: $id) {
                 id
                 createdAt
+                tags
                 messages {
                     id
                     isError
@@ -182,6 +191,7 @@ class ChainlitCloudClient(ChainlitGraphQLClient):
                     content
                     waitForAnswer
                     humanFeedback
+                    humanFeedbackComment
                     disableHumanFeedback
                     language
                     prompt
@@ -236,6 +246,7 @@ class ChainlitCloudClient(ChainlitGraphQLClient):
             node {
             id
             createdAt
+            tags
             elementCount
             messageCount
             appUser {
@@ -275,14 +286,22 @@ class ChainlitCloudClient(ChainlitGraphQLClient):
             data=conversations,
         )
 
-    async def set_human_feedback(self, message_id: str, feedback: int) -> bool:
-        mutation = """mutation ($messageId: ID!, $humanFeedback: Int!) {
-                        setHumanFeedback(messageId: $messageId, humanFeedback: $humanFeedback) {
+    async def set_human_feedback(
+        self, message_id: str, feedback: int, feedbackComment: Optional[str]
+    ) -> bool:
+        mutation = """mutation ($messageId: ID!, $humanFeedback: Int!, $humanFeedbackComment: String) {
+                    setHumanFeedback(messageId: $messageId, humanFeedback: $humanFeedback, humanFeedbackComment: $humanFeedbackComment) {
                             id
                             humanFeedback
+                            humanFeedbackComment
                     }
                 }"""
-        variables = {"messageId": message_id, "humanFeedback": feedback}
+        variables = {
+            "messageId": message_id,
+            "humanFeedback": feedback,
+        }
+        if feedbackComment:
+            variables["humanFeedbackComment"] = feedbackComment
         res = await self.mutation(mutation, variables)
         self.check_for_errors(res, raise_error=True)
 
@@ -411,9 +430,14 @@ class ChainlitCloudClient(ChainlitGraphQLClient):
 
         return res["data"]["updateElement"]
 
-    async def upload_element(self, content: Union[bytes, str], mime: str) -> Dict:
+    async def upload_element(
+        self, content: Union[bytes, str], mime: str, conversation_id: Optional[str]
+    ) -> Dict:
         id = str(uuid.uuid4())
         body = {"fileName": id, "contentType": mime}
+
+        if conversation_id:
+            body["conversationId"] = conversation_id
 
         path = f"/api/upload/file"
 

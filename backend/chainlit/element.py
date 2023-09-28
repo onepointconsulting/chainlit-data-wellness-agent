@@ -91,7 +91,10 @@ class Element:
                 if self.type in mime_types
                 else filetype.guess_mime(self.content)
             )
-            upload_res = await client.upload_element(content=self.content, mime=mime)
+            conversation_id = await context.session.get_conversation_id()
+            upload_res = await client.upload_element(
+                content=self.content, mime=mime, conversation_id=conversation_id
+            )
             self.url = upload_res["url"]
             self.object_key = upload_res["object_key"]
 
@@ -266,13 +269,8 @@ class TaskList(Element):
     type: ClassVar[ElementType] = "tasklist"
     tasks: List[Task] = Field(default_factory=list, exclude=True)
     status: str = "Ready"
-
-    def __init__(self):
-        self.tasks = []
-        self.content = "dummy content to pass validation"
-        self.name = "tasklist"
-        self.type = "tasklist"
-        super().__post_init__()
+    name: str = "tasklist"
+    content: str = "dummy content to pass validation"
 
     async def add_task(self, task: Task):
         self.tasks.append(task)

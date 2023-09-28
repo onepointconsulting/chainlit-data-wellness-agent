@@ -20,7 +20,8 @@ export type Provider =
   | 'github'
   | 'google'
   | 'azure-ad'
-  | 'okta';
+  | 'okta'
+  | 'auth0';
 
 export interface IAppUser {
   username: string;
@@ -77,7 +78,7 @@ export interface IConversation {
 
 export interface IPageInfo {
   hasNextPage: boolean;
-  endCursor: string;
+  endCursor?: string;
 }
 
 export interface IPaginatedResponse<T> {
@@ -212,15 +213,24 @@ export class ChainlitCloudClient extends ChainlitGraphQLClient {
     return true;
   }
 
-  async createConversation(appUserId?: string): Promise<string> {
+  async createConversation(
+    appUserId?: string,
+    tags?: string[]
+  ): Promise<string> {
     const mutation = `
-        mutation ($appUserId: String) {
-            createConversation (appUserId: $appUserId) {
-                id
-            }
-        }
+    mutation ($appUserId: String, $tags: [String!]) {
+      createConversation (appUserId: $appUserId, tags: $tags) {
+          id
+      }
+  }
     `;
-    const variables = appUserId ? { appUserId: appUserId } : {};
+    const variables: Record<string, unknown> = {};
+    if (appUserId) {
+      variables['appUserId'] = appUserId;
+    }
+    if (tags) {
+      variables['tags'] = tags;
+    }
     const res = await this.mutation(mutation, variables);
     return res.createConversation.id;
   }
@@ -264,6 +274,7 @@ export class ChainlitCloudClient extends ChainlitGraphQLClient {
             conversation(id: $id) {
                 id
                 createdAt
+                tags
                 messages {
                     id
                     isError
@@ -273,6 +284,7 @@ export class ChainlitCloudClient extends ChainlitGraphQLClient {
                     content
                     waitForAnswer
                     humanFeedback
+                    humanFeedbackComment
                     disableHumanFeedback
                     language
                     prompt
@@ -360,17 +372,24 @@ export class ChainlitCloudClient extends ChainlitGraphQLClient {
 
   async setHumanFeedback(
     messageId: string,
-    feedback: number
+    feedback: number,
+    feedbackComment?: string
   ): Promise<boolean> {
     const mutation = `
-        mutation ($messageId: ID!, $humanFeedback: Int!) {
-            setHumanFeedback(messageId: $messageId, humanFeedback: $humanFeedback) {
-                id
-                humanFeedback
-            }
-        }
+    mutation ($messageId: ID!, $humanFeedback: Int!, $humanFeedbackComment: String) {
+      setHumanFeedback(messageId: $messageId, humanFeedback: $humanFeedback, humanFeedbackComment: $humanFeedbackComment) {
+              id
+              humanFeedback
+              humanFeedbackComment
+      }
+  }
     `;
-    const variables = { messageId: messageId, humanFeedback: feedback };
+    const variables = {
+      messageId: messageId,
+      humanFeedback: feedback,
+      humanFeedbackComment: feedbackComment
+    };
+
     await this.mutation(mutation, variables);
     return true;
   }
@@ -477,9 +496,9 @@ export class ChainlitCloudClient extends ChainlitGraphQLClient {
     return res.updateElement;
   }
 
-  async uploadElement(content: Blob, mime: string) {
+  async uploadElement(content: Blob, mime: string, conversationId?: string) {
     const id = uuidv4();
-    const body = { fileName: id, contentType: mime };
+    const body = { fileName: id, contentType: mime, conversationId };
     const path = '/api/upload/file';
     const response = await fetch(`${this.chainlitServer}${path}`, {
       method: 'POST',

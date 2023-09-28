@@ -21,7 +21,7 @@ import chainlit.input_widget as input_widget
 from chainlit.action import Action
 from chainlit.cache import cache
 from chainlit.chat_settings import ChatSettings
-from chainlit.client.base import AppUser
+from chainlit.client.base import AppUser, PersistedAppUser
 from chainlit.config import config
 from chainlit.element import (
     Audio,
@@ -151,6 +151,22 @@ def on_chat_start(func: Callable) -> Callable:
 
 
 @trace
+def on_chat_end(func: Callable) -> Callable:
+    """
+    Hook to react to the user websocket disconnect event.
+
+    Args:
+        func (Callable[], Any]): The disconnect hook to execute.
+
+    Returns:
+        Callable[], Any]: The decorated hook.
+    """
+
+    config.code.on_chat_end = wrap_user_function(func, with_task=True)
+    return func
+
+
+@trace
 def author_rename(func: Callable[[str], str]) -> Callable[[str], str]:
     """
     Useful to rename the author of message to display more friendly author names in the UI.
@@ -266,6 +282,7 @@ __all__ = [
     "user_session",
     "Action",
     "AppUser",
+    "PersistedAppUser",
     "Audio",
     "Pdf",
     "Image",
@@ -284,6 +301,7 @@ __all__ = [
     "AskUserMessage",
     "AskFileMessage",
     "on_chat_start",
+    "on_chat_end",
     "on_stop",
     "action_callback",
     "author_rename",
