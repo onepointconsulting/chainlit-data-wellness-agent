@@ -24,6 +24,7 @@ import NewChatButton from 'components/molecules/newChatButton';
 import { useAuth } from 'hooks/auth';
 
 import { projectSettingsState } from 'state/project';
+import { Logo } from 'components/atoms/logo';
 
 interface INavItem {
   to: string;
@@ -142,6 +143,18 @@ function Nav({ hasDb, hasReadme }: NavProps) {
   }
 }
 
+function HeaderLogo() {
+  const pSettings = useRecoilValue(projectSettingsState);
+  const githubLink = pSettings?.ui?.github
+  const logo = <Logo style={{maxHeight: '50px'}}/>
+  return (
+    <Box className="logo-box">
+      {!!githubLink ? <a href={githubLink} target='_blank'>{logo}</a> : <>{logo}</>}
+    </Box>
+  )
+}
+
+
 export default function Header() {
   const { user } = useAuth();
   const pSettings = useRecoilValue(projectSettingsState);
@@ -160,6 +173,7 @@ export default function Header() {
         }}
       >
         <Stack alignItems="center" direction="row">
+          <HeaderLogo />
           <Nav hasDb={hasHistory} hasReadme={!!pSettings?.markdown} />
         </Stack>
         <Stack

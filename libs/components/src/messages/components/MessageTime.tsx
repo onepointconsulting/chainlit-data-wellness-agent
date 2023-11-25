@@ -8,6 +8,7 @@ interface Props {
 
 const MessageTime = ({ timestamp }: Props) => {
   if (!timestamp) return null;
+  
   const dateOptions: Intl.DateTimeFormatOptions = {
     hour: '2-digit',
     minute: '2-digit',
@@ -15,7 +16,7 @@ const MessageTime = ({ timestamp }: Props) => {
   };
   const date = new Date(timestamp).toLocaleTimeString(undefined, dateOptions);
   return (
-    <Typography lineHeight="24px" color={grey[500]} fontSize="11px">
+    <Typography className="message-date" lineHeight="24px" color={grey[500]} fontSize="11px">
       {date}
     </Typography>
   );

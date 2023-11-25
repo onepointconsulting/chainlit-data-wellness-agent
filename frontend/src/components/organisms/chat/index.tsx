@@ -49,6 +49,8 @@ const Chat = () => {
         createdAt: new Date().toISOString()
       };
 
+      debugger
+
       setChatHistory((old) => {
         const MAX_SIZE = 50;
         const messages = [...(old.messages || [])];

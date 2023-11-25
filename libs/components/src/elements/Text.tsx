@@ -7,6 +7,7 @@ import Link from '@mui/material/Link';
 import { useApi } from 'hooks/index';
 
 import { ITextElement } from 'src/types/element';
+import rehypeRaw from "rehype-raw";
 
 interface Props {
   element: ITextElement;
@@ -33,6 +34,7 @@ const TextElement = ({ element }: Props) => {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw]}
       className="markdown-body"
       components={{
         a: ({ children, ...props }) => (

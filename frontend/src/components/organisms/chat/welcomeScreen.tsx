@@ -7,6 +7,7 @@ import { Box, Link } from '@mui/material';
 import { Code } from '@chainlit/components';
 
 import { projectSettingsState } from 'state/project';
+import rehypeRaw from "rehype-raw";
 
 const WelcomeScreen = () => {
   const pSettings = useRecoilValue(projectSettingsState);
@@ -36,6 +37,7 @@ const WelcomeScreen = () => {
           <ReactMarkdown
             className="markdown-body"
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
             components={{
               a: ({ children, ...props }) => (
                 <Link {...props} target="_blank">

@@ -1,4 +1,4 @@
-# Welcome to Chainlit 👋
+# Welcome to a hacked version of Chainlit 👋
 
 **Build Python LLM apps in minutes ⚡️**
 

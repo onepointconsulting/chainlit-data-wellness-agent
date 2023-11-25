@@ -17,3 +17,21 @@
 .markdown-body p {
   white-space: break-spaces;
 }
+
+/* Added by Onepoint */
+.side-menu {
+  min-width: 50px;
+  margin: 5em 1em;
+}
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: inherit;
+}
+
+img.side-menu-item {
+  width: 50px;
+  display: block;
+}

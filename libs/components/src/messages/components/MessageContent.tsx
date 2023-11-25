@@ -21,8 +21,11 @@ import Typography from '@mui/material/Typography';
 import { IMessageContent } from 'src/types/message';
 
 import { ElementRef } from './ElementRef';
+import rehypeRaw from "rehype-raw";
 
-const COLLAPSE_MIN_LINES = 25; // Set this to the maximum number of lines you want to display before collapsing
+// Changed from 25 to 200 by Gil Fernandes
+const COLLAPSE_MIN_LINES = 300
+; // Set this to the maximum number of lines you want to display before collapsing
 const COLLAPSE_MIN_LENGTH = 3000; // Set this to the maximum number of characters you want to display before collapsing
 
 const MessageContent = memo(
@@ -58,6 +61,7 @@ const MessageContent = memo(
         >
           <ReactMarkdown
             remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeRaw]}
             className="markdown-body"
             components={{
               a({ children, ...props }) {

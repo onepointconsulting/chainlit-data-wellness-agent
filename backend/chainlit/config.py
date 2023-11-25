@@ -72,6 +72,7 @@ hide_cot = false
 [UI.theme.light]
     #background = "#FAFAFA"
     #paper = "#FFFFFF"
+    #logo = "https://avatars.githubusercontent.com/u/128686189?s=48&v=4"
 
     [UI.theme.light.primary]
         #main = "#F80061"
@@ -82,6 +83,7 @@ hide_cot = false
 [UI.theme.dark]
     #background = "#FAFAFA"
     #paper = "#FFFFFF"
+    #logo = "https://avatars.githubusercontent.com/u/128686189?s=48&v=4"
 
     [UI.theme.dark.primary]
         #main = "#F80061"
@@ -125,6 +127,8 @@ class Palette(DataClassJsonMixin):
     primary: Optional[PaletteOptions] = None
     background: Optional[str] = ""
     paper: Optional[str] = ""
+    # Optional logo to display next to the chat button
+    logo: Optional[str] = ""
 
 
 @dataclass()
@@ -150,6 +154,8 @@ class UISettings(DataClassJsonMixin):
     theme: Optional[Theme] = None
     # Optional custom CSS file that allows you to customize the UI
     custom_css: Optional[str] = None
+    # Optional watermark text, like 'Built by' or 'Built with'
+    watermark_text: Optional[str] = None
 
 
 @dataclass()
