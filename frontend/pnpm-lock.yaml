@@ -23,6 +23,9 @@ dependencies:
   '@mui/material':
     specifier: ^5.14.10
     version: 5.14.10(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.0)(react-dom@18.2.0)(react@18.2.0)
+  '@userback/react':
+    specifier: ^0.3.1
+    version: 0.3.1(react-dom@18.2.0)(react@18.2.0)
   formik:
     specifier: ^2.4.3
     version: 2.4.3(react@18.2.0)
@@ -987,6 +990,21 @@ packages:
   /@types/uuid@9.0.3:
     resolution: {integrity: sha512-taHQQH/3ZyI3zP8M/puluDEIEvtQHVYcC6y3N8ijFtAd28+Ey/G4sg1u2gB01S8MwybLOKAp9/yCMu/uR5l3Ug==}
     dev: true
+
+  /@userback/react@0.3.1(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-MoHZa5ofrf8Sy5JGb5IgxJZrZNnjp7MpN0xXSv4wrCdgZW3xHY9UdL107o+xQqIVo36KSPoWIvf1SQWTfff7ow==}
+    peerDependencies:
+      react: '>=17.0.0'
+      react-dom: '>=17.0.0'
+    dependencies:
+      '@userback/widget': 0.3.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /@userback/widget@0.3.1:
+    resolution: {integrity: sha512-8/TrxHAOs/PMsgjpNJUMtCXzv3B8cFHXKCnqAwWeW7+iRtsgYQJ63WaVSb0peKPTcp3V3KyhrCdsvSW5Vkn0YA==}
+    dev: false
 
   /@vitejs/plugin-react-swc@3.3.2(vite@4.4.9):
     resolution: {integrity: sha512-VJFWY5sfoZerQRvJrh518h3AcQt6f/yTuWn4/TRB+dqmYU0NX1qz7qM5Wfd+gOQqUzQW4gxKqKN3KpE/P3+zrA==}
