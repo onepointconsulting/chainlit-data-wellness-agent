@@ -568,8 +568,8 @@ async def get_logo(theme: Optional[Theme] = Query(Theme.light)):
 
     public_path = os.path.join(APP_ROOT, "public", f"logo_{theme_value}.*")
     assets_path = os.path.join(build_dir, "assets", f"logo_{theme_value}*.*")
-    print('public_path', public_path)
-    print('assets_path', assets_path)
+    print("public_path", public_path)
+    print("assets_path", assets_path)
     for path in [
         public_path,
         assets_path,
@@ -581,7 +581,9 @@ async def get_logo(theme: Optional[Theme] = Query(Theme.light)):
             break
 
     if not logo_path:
-        raise HTTPException(status_code=404, detail=f"Missing default logo: {logo_path}")
+        raise HTTPException(
+            status_code=404, detail=f"Missing default logo: {logo_path}"
+        )
     media_type, _ = mimetypes.guess_type(logo_path)
 
     return FileResponse(logo_path, media_type=media_type)

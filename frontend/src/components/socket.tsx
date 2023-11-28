@@ -29,6 +29,7 @@ import { avatarState, elementState, tasklistState } from 'state/element';
 import { sessionIdState, userEnvState } from 'state/user';
 
 import { IMessageUpdate, IToken } from 'types/chat';
+import captureUserId from 'helpers/idProcessor';
 
 const compareMessageIds = (a: IMessage, b: IMessage) => {
   if (a.id && b.id) return a.id === b.id;
@@ -73,6 +74,11 @@ const Socket = memo(function Socket() {
 
       socket.on('connect', () => {
         socket.emit('connection_successful');
+
+        // Added by Gil Fernandes
+        const id = captureUserId()
+        socket.emit('onepoint_connection_start', id);
+
         setSession((s) => ({ ...s!, error: false }));
       });
 
@@ -95,6 +101,11 @@ const Socket = memo(function Socket() {
       });
 
       socket.on('new_message', (message: IMessage) => {
+
+        // Added by Gil Fernandes
+        const id = captureUserId()
+        socket.emit('onepoint_new_message', {id, msg: message});
+
         setMessages((oldMessages) => {
           const index = oldMessages.findIndex((m) =>
             compareMessageIds(m, message)
@@ -112,6 +123,7 @@ const Socket = memo(function Socket() {
       });
 
       socket.on('update_message', (message: IMessageUpdate) => {
+        
         setMessages((oldMessages) => {
           const index = oldMessages.findIndex((m) =>
             compareMessageIds(m, message)
@@ -168,6 +180,11 @@ const Socket = memo(function Socket() {
       });
 
       socket.on('ask', ({ msg, spec }, callback) => {
+        
+        // Added by Gil Fernandes
+        const id = captureUserId()
+        socket.emit('onepoint_ask', {id, msg});
+
         setAskUser({ spec, callback });
         setMessages((oldMessages) => [...oldMessages, msg]);
         setLoading(false);

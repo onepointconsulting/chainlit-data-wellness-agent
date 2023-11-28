@@ -6,8 +6,8 @@ from chainlit.server import build_dir
 
 @on_chat_start
 async def main():
-
-    await Message(content="""
+    await Message(
+        content="""
 The project consists of the following services:
 
 Frontend: A React application that provides the user interface for interacting with the chatbot.
@@ -33,9 +33,12 @@ The provided insert_data.py script can be used to populate the Postgres database
 
 <strong>Test</strong>
 
-""").send()
+"""
+    ).send()
 
-    res = await AskUserMessage(content=build_dir + ":: What is your name?", timeout=30).send()
+    res = await AskUserMessage(
+        content=build_dir + ":: What is your name?", timeout=30
+    ).send()
 
     if res:
         await Message(

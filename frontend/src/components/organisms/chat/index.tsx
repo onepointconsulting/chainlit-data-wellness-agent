@@ -20,6 +20,7 @@ import { projectSettingsState } from 'state/project';
 import InputBox from './inputBox';
 import MessageContainer from './message/container';
 import WelcomeScreen from './welcomeScreen';
+import captureUserId from 'helpers/idProcessor';
 
 const Chat = () => {
   const { user, isAuthenticated } = useAuth();
@@ -46,10 +47,8 @@ const Chat = () => {
         author: user?.username || 'User',
         authorIsUser: true,
         content: msg,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
       };
-
-      debugger
 
       setChatHistory((old) => {
         const MAX_SIZE = 50;
@@ -70,6 +69,9 @@ const Chat = () => {
 
       setAutoScroll(true);
       setMessages((oldMessages) => [...oldMessages, message]);
+
+      // Changed by Onepoint
+      message.onepointId = captureUserId()
       session?.socket.emit('ui_message', message);
     },
     [user, session, isAuthenticated, pSettings]
@@ -83,10 +85,13 @@ const Chat = () => {
         author: user?.username || 'User',
         authorIsUser: true,
         content: msg,
-        createdAt: new Date().toISOString()
+        createdAt: new Date().toISOString(),
+        onepointId: captureUserId()
       };
 
+      // Changed by Onepoint
       askUser.callback(message);
+      session?.socket.emit('ui_message', message);
 
       setAutoScroll(true);
       setMessages((oldMessages) => [...oldMessages, message]);
