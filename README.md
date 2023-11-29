@@ -1,5 +1,15 @@
 # Welcome to a hacked version of Chainlit 👋
 
+## Important note
+
+This repository is a fork of the 0.7.1 of Chainlit which has been adapted to create a bot with a specialized Chainlit UI for this project:
+
+https://github.com/onepointconsulting/data-questionnaire-agent
+
+This is not for general purpose use.
+
+For the real thing please go to https://chainlit.io
+
 **Build Python LLM apps in minutes ⚡️**
 
 Chainlit lets you create ChatGPT-like UIs on top of any Python code in minutes! Some of the key features include intermediary steps visualisation, element management & display (images, text, carousel, etc.) as well as cloud deployment.
