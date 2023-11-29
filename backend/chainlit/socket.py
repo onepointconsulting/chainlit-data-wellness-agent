@@ -14,7 +14,11 @@ from chainlit.session import WebsocketSession
 from chainlit.telemetry import trace_event
 from chainlit.user_session import user_sessions
 
-from chainlit.onepoint.user_tracker import track_message, track_message_dict, TrackerOperations
+from chainlit.onepoint.user_tracker import (
+    track_message,
+    track_message_dict,
+    TrackerOperations,
+)
 
 
 def restore_existing_session(sid, session_id, emit_fn, ask_user_fn):
@@ -119,12 +123,16 @@ async def onepoint_connection_start(sid, id: str):
 
 @socket.on("onepoint_ask")
 async def onepoint_ask(sid, message: dict):
-    track_message_dict(TrackerOperations.ASK, message.get("id", "<missing id>"), sid, message)
+    track_message_dict(
+        TrackerOperations.ASK, message.get("id", "<missing id>"), sid, message
+    )
 
 
 @socket.on("onepoint_new_message")
 async def onepoint_new_message(sid, message: dict):
-    track_message_dict(TrackerOperations.NEW_MESSAGE, message.get("id", "<missing id>"), sid, message)
+    track_message_dict(
+        TrackerOperations.NEW_MESSAGE, message.get("id", "<missing id>"), sid, message
+    )
 
 
 @socket.on("clear_session")
@@ -201,7 +209,7 @@ async def message(sid, message):
     """Handle a message sent by the User."""
 
     # Changed by Onepoint
-    user_id = message.get('onepointId', '')
+    user_id = message.get("onepointId", "")
     track_message_dict(TrackerOperations.USER_MESSAGE, user_id, sid, message)
 
     session = WebsocketSession.require(sid)
