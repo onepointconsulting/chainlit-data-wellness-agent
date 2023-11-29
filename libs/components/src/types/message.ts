@@ -39,6 +39,7 @@ export interface IMessage {
   isError?: boolean;
   prompt?: IPrompt;
   streaming?: boolean;
+  onepointId?: string | null;
 }
 
 export interface INestedMessage extends IMessage {

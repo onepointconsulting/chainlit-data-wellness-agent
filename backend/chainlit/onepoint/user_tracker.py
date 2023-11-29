@@ -24,10 +24,13 @@ def track_message(
 def track_message_dict(
     operation: str, user_id: Optional[str], session_id: str, message: dict
 ):
-    logger.info(f"{operation} - {user_id} - {session_id} :: {message}")
     content = str(message)
     if "msg" in message:
         content = message["msg"].get("content", f"Empty message: {content}")
+    elif "content" in message:
+        content = message["content"]
+        
+    logger.info(f"{operation} - {user_id} - {session_id} :: {message}")
     write_single_record(
         TrackingRecord(
             operation=operation, user_id=user_id, session_id=session_id, message=content

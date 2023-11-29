@@ -50,7 +50,7 @@ def create_table():
 def list_activity_log() -> Generator:
     with sqlite3.connect(ONEPOINT_SQL_LITE_DB) as conn:
         cur = conn.cursor()
-        data = cur.execute(f"SELECT * from {TABLE_NAME} order by id")
+        data = cur.execute(f"SELECT * from {TABLE_NAME} order by id asc")
         for row in data:
             yield row
 
