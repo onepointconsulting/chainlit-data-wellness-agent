@@ -174,6 +174,7 @@ def get_html_template():
     PLACEHOLDER = "<!-- TAG INJECTION PLACEHOLDER -->"
     JS_PLACEHOLDER = "<!-- JS INJECTION PLACEHOLDER -->"
     CSS_PLACEHOLDER = "<!-- CSS INJECTION PLACEHOLDER -->"
+    CUSTOM_JS_PLACEHOLDER = "<!-- CUSTOM JS INJECTION PLACEHOLDER -->"
 
     default_url = "https://github.com/Chainlit/chainlit"
     url = config.ui.github or default_url
@@ -194,6 +195,12 @@ def get_html_template():
             f"""<link rel="stylesheet" type="text/css" href="{config.ui.custom_css}">"""
         )
 
+    custom_js = None
+    if config.ui.custom_js:
+        custom_js = (
+            f"""<script src="{config.ui.custom_js}"></script>"""
+        )
+
     index_html_file_path = os.path.join(build_dir, "index.html")
 
     with open(index_html_file_path, "r", encoding="utf-8") as f:
@@ -203,6 +210,8 @@ def get_html_template():
             content = content.replace(JS_PLACEHOLDER, js)
         if css:
             content = content.replace(CSS_PLACEHOLDER, css)
+        if custom_js:
+            content = content.replace(CUSTOM_JS_PLACEHOLDER, custom_js)
         return content
 
 

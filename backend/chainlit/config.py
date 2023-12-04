@@ -154,6 +154,8 @@ class UISettings(DataClassJsonMixin):
     theme: Optional[Theme] = None
     # Optional custom CSS file that allows you to customize the UI
     custom_css: Optional[str] = None
+    # Optional custom JS file that allows you to customize the UI behaviour
+    custom_js: Optional[str] = None
     # Optional watermark text, like 'Built by' or 'Built with'
     watermark_text: Optional[str] = None
 
